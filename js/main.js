@@ -2,6 +2,10 @@
 var nums = new Array();
 var score = 0;
 var hasConflicted = new Array();
+var startx = 0;
+var starty = 0;
+var endx = 0;
+var endy = 0;
 $(document).ready(function() {
     newgame();
 });
@@ -94,6 +98,10 @@ function updateView() {
     }
 }
 
+
+
+
+
 $(document).keydown(function(event) {
     event.preventDefault();
     switch(event.keyCode) {
@@ -141,6 +149,59 @@ $(document).keydown(function(event) {
         
     
 });
+
+document.addEventListener("touchstart", function(event){
+    startx = event.touches[0].pageX;
+    starty = event.touches[0].pageY;
+});
+
+document.addEventListener("touchend", function(event) {
+    endx = event.changedTouches[0].pageX;
+    endy = event.changedTouches[0].pageY;
+
+    var deltax = endx - startx;
+    var deltay = endy - starty;
+    // 变化量特别小 -- 不算移动
+    if (Math.abs(deltax) < document.documentElement.clientWidth * 0.08 && Math.abs(deltay) < document.documentElement.clientWidth * 0.08) {
+        return;
+    }
+    if (Math.abs(deltax) >= Math.abs(deltay)) {
+        if (deltax > 0) { // 向右移动
+            if (canMoveRight(nums)) {
+                moveRight();
+                setTimeout(generateOneNumber, 300);
+                setTimeout(isGameOver(nums), 500);
+            }
+        } else {
+            if (canMoveLeft(nums)) {
+                moveLeft();
+                setTimeout(generateOneNumber, 300);
+                setTimeout(isGameOver(nums), 500);
+            }
+
+        }
+    } else {
+        if (deltay > 0) { // 向下移动
+            if (canMoveDown(nums)) {
+                moveDown();
+                setTimeout(generateOneNumber, 300);
+                setTimeout(isGameOver(nums), 500);
+            }
+        } else {
+            if (canMoveUp(nums)) {
+                moveUp();
+                setTimeout(generateOneNumber, 300);
+                setTimeout(isGameOver(nums), 500);
+            }
+        }
+    }
+});
+
+
+
+
+
+
 
 /*
     向左移动
